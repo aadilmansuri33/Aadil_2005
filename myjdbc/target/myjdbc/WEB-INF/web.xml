@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	<display-name>Archetype Created Web Application</display-name>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/accessDenied.jsp</location>
+	</error-page>
+	<filter>
+		<filter-name>AuthenticationFilter</filter-name>
+		<filter-class>com.aadil.jdbc.filters.AuthenticationFilter</filter-class>
+	</filter>
+	<filter>
+		<filter-name>NocacheFilter</filter-name>
+		<filter-class>com.aadil.jdbc.filters.NocacheFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<url-pattern>/Authentication</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>NocacheFilter</filter-name>
+		<url-pattern>/LoginController</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>NocacheFilter</filter-name>
+		<url-pattern>/UserController</url-pattern>
+	</filter-mapping>
+	<servlet>
+		<servlet-name>UserController</servlet-name>
+
+		<servlet-class>com.aadil.jdbc.controller.UserController</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>LoginController</servlet-name>
+		<servlet-class>com.aadil.jdbc.controller.LoginController</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserController</servlet-name>
+		<url-pattern>/UserController</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>LoginController</servlet-name>
+		<url-pattern>/LoginController</url-pattern>
+	</servlet-mapping>
+
+</web-app>
