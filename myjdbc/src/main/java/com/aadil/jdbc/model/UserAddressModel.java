@@ -14,6 +14,11 @@ public class UserAddressModel {
 	private String updateAt;
 	private Long userId;
 
+	public UserAddressModel() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getCreateAt() {
 		return createAt;
 	}

@@ -2,6 +2,7 @@ package com.aadil.jdbc.daoImpl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import com.aadil.jdbc.dao.UserDao;
 import com.aadil.jdbc.model.UserModel;
 
 public class UserDaoImpl implements UserDao {
+	PreparedStatement statement;
+	ResultSet resultSet;
 
 	@Override
 	public Long saveUser(UserModel userModel) {
@@ -17,9 +20,8 @@ public class UserDaoImpl implements UserDao {
 		Long userId = null;
 		try {
 			String query = "insert into user_table (role_id,suffix,first_name,last_name,email,date_of_birth,mobile_no,alternate_no,gender,password,create_at,file_id) values(?,?,?,?,?,?,?,?,?,?,now(),?)";
-			PreparedStatement statement = DBConfig.getConnection().prepareStatement(query,
-					PreparedStatement.RETURN_GENERATED_KEYS);
-			statement.setLong(1, userModel.getRoleId());
+			statement = DBConfig.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+			statement.setLong(1, userModel.getUserRoleId());
 			statement.setString(2, userModel.getSuffix());
 			statement.setString(3, userModel.getFirstName());
 			statement.setString(4, userModel.getLastName());
@@ -31,14 +33,21 @@ public class UserDaoImpl implements UserDao {
 			statement.setString(10, userModel.getPassword());
 			statement.setLong(11, userModel.getFileId());
 			statement.executeUpdate();
-			ResultSet resultSet = statement.getGeneratedKeys();
+			resultSet = statement.getGeneratedKeys();
 			while (resultSet.next()) {
 				userId = resultSet.getLong(1);
 			}
-			statement.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return userId;
 	}
@@ -46,10 +55,11 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public void updateUser(UserModel userModel) {
 		// TODO Auto-generated method stub
+
 		try {
-			PreparedStatement statement = DBConfig.getConnection().prepareStatement(
-					"update user_table set role_id = ? suffix = ?,first_name=?,last_name=?,email=?,date_of_birth=?,mobile_no=?,alternate_no=?,gender=?,update_at=now() where user_id = ? ");
-			statement.setLong(1, userModel.getRoleId());
+			String query = "update user_table set role_id = ? suffix = ?,first_name=?,last_name=?,email=?,date_of_birth=?,mobile_no=?,alternate_no=?,gender=?,update_at=now() where user_id = ? ";
+			statement = DBConfig.getConnection().prepareStatement(query);
+			statement.setLong(1, userModel.getUserRoleId());
 			statement.setString(2, userModel.getSuffix());
 			statement.setString(3, userModel.getFirstName());
 			statement.setString(4, userModel.getLastName());
@@ -60,9 +70,14 @@ public class UserDaoImpl implements UserDao {
 			statement.setString(9, userModel.getGender());
 			statement.executeUpdate();
 			statement.close();
-		} catch (Exception e) {
-			// TODO: handle exception
+		} catch (Exception e) { // TODO: handle exception
 			e.printStackTrace();
+		} finally {
+			try {
+				statement.close();
+			} catch (SQLException e) { // TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -70,31 +85,26 @@ public class UserDaoImpl implements UserDao {
 	public List<UserModel> showAllUser() {
 		// TODO Auto-generated method stub
 		List<UserModel> userModels = new ArrayList<>();
-		UserModel userModel;
 		try {
-			PreparedStatement statement = DBConfig.getConnection().prepareStatement("select * from user_table");
-			ResultSet resultSet = statement.executeQuery();
+			UserModel userModel;
+			statement = DBConfig.getConnection().prepareStatement("select * from user_table");
+			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				userModel = new UserModel();
-				userModel.setUserId(resultSet.getLong(1));
-				userModel.setRoleId(resultSet.getLong(2));
-				userModel.setSuffix(resultSet.getString(3));
-				userModel.setFirstName(resultSet.getString(4));
-				userModel.setLastName(resultSet.getString(5));
-				userModel.setEmail(resultSet.getString(6));
-				userModel.setDateOfBirth(resultSet.getString(7));
-				userModel.setMobileNo(resultSet.getLong(8));
-				userModel.setAlternateNo(resultSet.getLong(9));
-				userModel.setGender(resultSet.getString(10));
-				userModel.setPassword(resultSet.getString(11));
-				userModel.setCreateAt(resultSet.getString(12));
-				userModel.setUpdateAt(resultSet.getString(13));
-				userModel.setFileId(resultSet.getLong(14));
+				userModel = extractUserFromResultSet(resultSet);
 				userModels.add(userModel);
 			}
+			resultSet.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return userModels;
 	}
@@ -104,27 +114,26 @@ public class UserDaoImpl implements UserDao {
 		// TODO Auto-generated method stub
 		UserModel userModel = null;
 		try {
-			String query = "select * from user_table where email = '" + email + "'";
-			PreparedStatement statement = DBConfig.getConnection().prepareStatement(query);
-			ResultSet resultSet = statement.executeQuery();
+			String query = "select * from user_table where email = ?";
+			statement = DBConfig.getConnection().prepareStatement(query);
+			statement.setString(1, email);
+			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				userModel = new UserModel();
-				userModel.setUserId(resultSet.getLong("user_id"));
-				userModel.setRoleId(resultSet.getLong("role_id"));
-				userModel.setSuffix(resultSet.getString("suffix"));
-				userModel.setFirstName(resultSet.getString("first_name"));
-				userModel.setLastName(resultSet.getString("last_name"));
-				userModel.setEmail(resultSet.getString("email"));
-				userModel.setDateOfBirth(resultSet.getString("date_of_birth"));
-				userModel.setMobileNo(resultSet.getLong("mobile_no"));
-				userModel.setAlternateNo(resultSet.getLong("alternate_no"));
-				userModel.setGender(resultSet.getString("gender"));
-				userModel.setPassword(resultSet.getString("password"));
-				userModel.setFileId(resultSet.getLong("file_id"));
+				userModel = extractUserFromResultSet(resultSet);
 			}
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return userModel;
 	}
@@ -133,14 +142,45 @@ public class UserDaoImpl implements UserDao {
 	public void deleteUser(Long userid) {
 		// TODO Auto-generated method stub
 		try {
-			PreparedStatement statement = DBConfig.getConnection()
-					.prepareStatement("delete from user_table where user_id=" + userid);
+			statement = DBConfig.getConnection().prepareStatement("delete from user_table where user_id=" + userid);
 			statement.executeUpdate();
-			statement.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public UserModel extractUserFromResultSet(ResultSet resultSet) {
+		// TODO Auto-generated method stub
+		UserModel userModel = new UserModel();
+		try {
+			userModel.setUserId(resultSet.getLong(1));
+			userModel.setUserRoleId(resultSet.getLong(2));
+			userModel.setSuffix(resultSet.getString(3));
+			userModel.setFirstName(resultSet.getString(4));
+			userModel.setLastName(resultSet.getString(5));
+			userModel.setEmail(resultSet.getString(6));
+			userModel.setDateOfBirth(resultSet.getString(7));
+			userModel.setMobileNo(resultSet.getLong(8));
+			userModel.setAlternateNo(resultSet.getLong(9));
+			userModel.setGender(resultSet.getString(10));
+			userModel.setPassword(resultSet.getString(11));
+			userModel.setCreateAt(resultSet.getString(12));
+			userModel.setUpdateAt(resultSet.getString(13));
+			userModel.setFileId(resultSet.getLong(14));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return userModel;
 	}
 
 }

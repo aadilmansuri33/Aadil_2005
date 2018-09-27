@@ -12,6 +12,8 @@ import com.aadil.jdbc.dao.UserFileDao;
 import com.aadil.jdbc.model.UserFileModel;
 
 public class UserFileDaoImpl implements UserFileDao {
+	PreparedStatement statement;
+	ResultSet resultSet;
 
 	@Override
 	public Long saveFile(UserFileModel fileModel) {
@@ -19,18 +21,24 @@ public class UserFileDaoImpl implements UserFileDao {
 		Long fileId = null;
 		try {
 			String query = "insert into file_table (file,create_at) values(?,now())";
-			PreparedStatement statement = DBConfig.getConnection().prepareStatement(query,
-					PreparedStatement.RETURN_GENERATED_KEYS);
+			statement = DBConfig.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 			statement.setBlob(1, fileModel.getUploadfile());
 			statement.executeUpdate();
-			ResultSet resultSet = statement.getGeneratedKeys();
+			resultSet = statement.getGeneratedKeys();
 			while (resultSet.next()) {
 				fileId = resultSet.getLong(1);
 			}
-			statement.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return fileId;
 	}
@@ -48,8 +56,8 @@ public class UserFileDaoImpl implements UserFileDao {
 		List<UserFileModel> fileModels = new ArrayList<>();
 		UserFileModel fileModel;
 		try {
-			PreparedStatement statement = DBConfig.getConnection().prepareStatement("select * from file_table");
-			ResultSet resultSet = statement.executeQuery();
+			statement = DBConfig.getConnection().prepareStatement("select * from file_table");
+			resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				fileModel = new UserFileModel();
 				fileModel.setFileId(resultSet.getLong(1));
@@ -58,9 +66,18 @@ public class UserFileDaoImpl implements UserFileDao {
 				fileModel.setUpdateAt(resultSet.getString(4));
 				fileModels.add(fileModel);
 			}
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+		} finally {
+			try {
+				resultSet.close();
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return fileModels;
 	}

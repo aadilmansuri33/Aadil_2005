@@ -11,6 +11,10 @@
 		<error-code>404</error-code>
 		<location>/accessDenied.jsp</location>
 	</error-page>
+	<!-- <error-page>
+		<error-code>500</error-code>
+		<location>/internalServer.jsp</location>
+	</error-page> -->
 	<filter>
 		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>com.aadil.jdbc.filters.AuthenticationFilter</filter-class>
@@ -25,11 +29,7 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>NocacheFilter</filter-name>
-		<url-pattern>/LoginController</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>NocacheFilter</filter-name>
-		<url-pattern>/UserController</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<servlet>
 		<servlet-name>UserController</servlet-name>
@@ -40,6 +40,13 @@
 		<servlet-name>LoginController</servlet-name>
 		<servlet-class>com.aadil.jdbc.controller.LoginController</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>Test</display-name>
+		<servlet-name>Test</servlet-name>
+		<servlet-class>com.aadil.jdbc.controller.Test</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>UserController</servlet-name>
 		<url-pattern>/UserController</url-pattern>
@@ -47,6 +54,10 @@
 	<servlet-mapping>
 		<servlet-name>LoginController</servlet-name>
 		<url-pattern>/LoginController</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Test</servlet-name>
+		<url-pattern>/Test</url-pattern>
 	</servlet-mapping>
 
 </web-app>

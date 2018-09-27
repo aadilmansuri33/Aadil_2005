@@ -35,12 +35,14 @@ public class NocacheFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		// TODO Auto-generated method stub
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		// place your code here
-		httpResponse.setHeader("Cache-Control", "no-cache");
-		httpResponse.setDateHeader("Expires", 0);
-		httpResponse.setHeader("Pragma", "No-cache");
-		chain.doFilter(request, response);
+		if (response instanceof HttpServletResponse) {
+			HttpServletResponse httpResponse = (HttpServletResponse) response;
+			// place your code here
+			httpResponse.setHeader("Cache-Control", "no-cache");
+			httpResponse.setDateHeader("Expires", 0);
+			httpResponse.setHeader("Pragma", "No-cache");
+			chain.doFilter(request, response);
+		}
 	}
 
 	/**
@@ -48,6 +50,6 @@ public class NocacheFilter implements Filter {
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
 		// TODO Auto-generated method stub
-	}
+	}	
 
 }

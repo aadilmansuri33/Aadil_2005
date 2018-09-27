@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="11" tokens="111">
+      <file line="23"
+            path="D:\Aadil\myjdbc\src\main\java\com\aadil\jdbc\daoImpl\UserDaoImpl.java"/>
+      <file line="61"
+            path="D:\Aadil\myjdbc\src\main\java\com\aadil\jdbc\daoImpl\UserDaoImpl.java"/>
+      <codefragment><![CDATA[			statement = DBConfig.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+			statement.setLong(1, userModel.getUserRoleId());
+			statement.setString(2, userModel.getSuffix());
+			statement.setString(3, userModel.getFirstName());
+			statement.setString(4, userModel.getLastName());
+			statement.setString(5, userModel.getEmail());
+			statement.setString(6, userModel.getDateOfBirth());
+			statement.setLong(7, userModel.getMobileNo());
+			statement.setLong(8, userModel.getAlternateNo());
+			statement.setString(9, userModel.getGender());
+			statement.setString(10, userModel.getPassword());]]></codefragment>
+   </duplication>
+</pmd-cpd>

@@ -55,7 +55,7 @@
 				<c:when test='${sessionScope.Login ne null}'>
 					<li class="dropdown"><a class="dropdown-toggle"
 						data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>Welcome
-							<c:out value="${sessionScope.Login.firstName }"></c:out> <b
+							<c:out value="${sessionScope.firstName }"></c:out> <b
 							class="caret"></b>
 					</a>
 						<ul class="dropdown-menu dropdown-user">
@@ -70,7 +70,7 @@
 			</c:choose>
 		</ul>
 		<!-- /.navbar-top-links --> <c:choose>
-			<c:when test='${sessionScope.Login.roleId == 1 }'>
+			<c:when test='${sessionScope.userRoleId == 1 }'>
 				<div class="navbar-default sidebar" role="navigation">
 					<div class="sidebar-nav navbar-collapse">
 						<ul class="nav" id="side-menu">
@@ -81,7 +81,7 @@
 				</div>
 			</c:when>
 			<c:otherwise>
-				<c:if test='${sessionScope.Login.roleId == 2 }'>
+				<c:if test='${sessionScope.userRoleId == 2 }'>
 					<div class="navbar-default sidebar" role="navigation">
 						<div class="sidebar-nav navbar-collapse">
 							<ul class="nav" id="side-menu">
@@ -113,7 +113,7 @@
 										<table class="table table-striped table-bordered table-hover"
 											id="dataTables-example">
 											<c:choose>
-												<c:when test="${sessionScope.Login.roleId == 1}">
+												<c:when test="${sessionScope.userRoleId == 1}">
 													<thead>
 														<tr>
 															<th>Id</th>
@@ -122,7 +122,6 @@
 															<th>First Name</th>
 															<th>Last Name</th>
 															<th>Email</th>
-															<th>File Id</th>
 															<th>Action</th>
 														</tr>
 													</thead>
@@ -130,12 +129,11 @@
 														<c:forEach items="${requestScope.users }" var="user">
 															<tr>
 																<td><c:out value="${user.userId }"></c:out></td>
-																<td><c:out value="${user.roleId }"></c:out></td>
+																<td><c:out value="${user.userRoleId }"></c:out></td>
 																<td><c:out value="${user.suffix }"></c:out></td>
 																<td><c:out value="${user.firstName }"></c:out></td>
 																<td><c:out value="${user.lastName }"></c:out></td>
 																<td><c:out value="${user.email }"></c:out></td>
-																<td><c:out value="${user.fileId }"></c:out></td>
 																<td><a
 																	href="UserController?action=edit&&id=${user.userId }"
 																	class="btn btn-info btn-circle"> <i
@@ -157,20 +155,19 @@
 															<th>First Name</th>
 															<th>Last Name</th>
 															<th>Email</th>
-															<th>File Id</th>
 															<th>Action</th>
 														</tr>
 													</thead>
 													<tbody>
+
 														<tr>
-															<td><c:out value="${sessionScope.Login.userId }"></c:out></td>
-															<td><c:out value="${sessionScope.Login.suffix }"></c:out></td>
-															<td><c:out value="${sessionScope.Login.firstName }"></c:out></td>
-															<td><c:out value="${sessionScope.Login.lastName }"></c:out></td>
-															<td><c:out value="${sessionScope.Login.email }"></c:out></td>
-															<td><c:out value="${sessionScope.Login.fileId }"></c:out></td>
+															<td><c:out value="${sessionScope.userId }"></c:out></td>
+															<td><c:out value="${sessionScope.suffix }"></c:out></td>
+															<td><c:out value="${sessionScope.firstName }"></c:out></td>
+															<td><c:out value="${sessionScope.lastName }"></c:out></td>
+															<td><c:out value="${sessionScope.email }"></c:out></td>
 															<td><a
-																href="UserController?action=edit&&userid=${sessionScope.Login.userId }"
+																href="UserController?action=edit&&userid=${sessionScope.userId }"
 																class="btn btn-info btn-circle"> <i
 																	class="fa fa-edit fa-fw"></i>
 															</a> <a

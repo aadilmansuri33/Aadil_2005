@@ -3,7 +3,7 @@ package com.aadil.jdbc.model;
 public class UserModel {
 
 	private Long userId;
-	private Long roleId;
+	private Long userRoleId;
 	private String suffix;
 	private String firstName;
 	private String lastName;
@@ -97,12 +97,12 @@ public class UserModel {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public Long getRoleId() {
-		return roleId;
+	public Long getUserRoleId() {
+		return userRoleId;
 	}
 
-	public void setRoleId(Long roleId) {
-		this.roleId = roleId;
+	public void setUserRoleId(Long userRoleId) {
+		this.userRoleId = userRoleId;
 	}
 
 	public String getCreateAt() {

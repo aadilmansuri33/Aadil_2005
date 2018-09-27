@@ -65,7 +65,7 @@
 					<c:when test='${sessionScope.Login ne null}'>
 						<li class="dropdown"><a class="dropdown-toggle"
 							data-toggle="dropdown" href="#"> <i class="fa fa-user fa-fw"></i>Welcome
-								<c:out value='${sessionScope.Login.firstName }'></c:out> <b
+								<c:out value='${sessionScope.firstName }'></c:out> <b
 								class="caret"></b>
 						</a>
 							<ul class="dropdown-menu dropdown-user">
@@ -84,7 +84,7 @@
 					<div class="sidebar-nav navbar-collapse">
 						<ul class="nav" id="side-menu">
 							<c:choose>
-								<c:when test="${sessionScope.Login.roleId == 1 }">
+								<c:when test="${sessionScope.userRoleId == 1 }">
 									<li><a href="UserController?action=data" class="active"><i
 											class="fa fa-users fa-fw"></i> Users</a></li>
 								</c:when>
@@ -100,7 +100,7 @@
 		</nav>
 		<c:choose>
 			<c:when
-				test="${sessionScope.Login ne null && SessionScope.Login.roleId == 1}">
+				test="${sessionScope.Login ne null && SessionScope.userRoleId == 1}">
 				<div id="page-wrapper">
 					<div class="row">
 						<div class="col-lg-12">
@@ -210,7 +210,9 @@
 			</c:when>
 		</c:choose>
 		<!-- /#page-wrapper -->
-
+		<div style="margin-top: 30%; text-align: center">
+			<a href="Test?action=test&&userid=${sessionScope.userId }">CLick</a>
+		</div>
 	</div>
 	<!-- /#wrapper -->
 	<c:if test="${not empty loginSucess}">

@@ -26,13 +26,13 @@ import com.aadil.jdbc.model.UserModel;
 @MultipartConfig(maxFileSize = 1024 * 1024 * 5)
 public class UserController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	UserModel userModel = new UserModel();
-	UserDao userDao = new UserDaoImpl();
-	UserAddressModel addressModel = new UserAddressModel();
-	UserAddressDao addressDao = new UserAddressDaoImpl();
-	UserFileModel fileModel = new UserFileModel();
-	UserFileDao fileDao = new UserFileDaoImpl();
-	Properties properties = new Properties();
+	static final UserModel userModel = new UserModel();
+	static final UserDao userDao = new UserDaoImpl();
+	static final UserAddressModel addressModel = new UserAddressModel();
+	static final UserAddressDao addressDao = new UserAddressDaoImpl();
+	static final UserFileModel fileModel = new UserFileModel();
+	static final UserFileDao fileDao = new UserFileDaoImpl();
+	static final Properties properties = new Properties();
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -42,12 +42,12 @@ public class UserController extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		properties.load(UserController.class.getClassLoader().getResourceAsStream("status.properties"));
-		if (("data").equals(request.getParameter("action"))) {
+		if ("data".equals(request.getParameter("action"))) {
 			List<UserModel> models = userDao.showAllUser();
 			request.setAttribute("users", models);
 			request.getRequestDispatcher("Users.jsp").forward(request, response);
 		}
-		if (("delete").equals(request.getParameter("action"))) {
+		if ("delete".equals(request.getParameter("action"))) {
 			userDao.deleteUser(Long.parseLong(request.getParameter("userid")));
 			request.setAttribute("deleteSuccess", properties.getProperty("deleteSuccess"));
 			request.getRequestDispatcher("index.jsp").forward(request, response);
@@ -66,52 +66,47 @@ public class UserController extends HttpServlet {
 		// TODO Auto-generated method stub
 		properties.load(UserController.class.getClassLoader().getResourceAsStream("status.properties"));
 		Long userid, fileId;
-		try {
-			fileModel.setUploadfile(request.getPart("upfile").getInputStream());
-			fileId = fileDao.saveFile(fileModel);
-			userModel.setRoleId(Long.parseLong("2"));
-			userModel.setSuffix(request.getParameter("suffix"));
-			userModel.setFirstName(request.getParameter("firstName"));
-			userModel.setLastName(request.getParameter("lastName"));
-			userModel.setEmail(request.getParameter("email"));
-			userModel.setDateOfBirth(request.getParameter("dateOfBirth"));
-			userModel.setMobileNo(Long.parseLong(request.getParameter("mobileNo")));
-			userModel.setAlternateNo(Long.parseLong(request.getParameter("alternateNo")));
-			userModel.setGender(request.getParameter("gender"));
-			userModel.setPassword(request.getParameter("password"));
-			userModel.setFileId(fileId);
+		fileModel.setUploadfile(request.getPart("upfile").getInputStream());
+		fileId = fileDao.saveFile(fileModel);
+		userModel.setUserRoleId(Long.parseLong("2"));
+		userModel.setSuffix(request.getParameter("suffix"));
+		userModel.setFirstName(request.getParameter("firstName"));
+		userModel.setLastName(request.getParameter("lastName"));
+		userModel.setEmail(request.getParameter("email"));
+		userModel.setDateOfBirth(request.getParameter("dateOfBirth"));
+		userModel.setMobileNo(Long.parseLong(request.getParameter("mobileNo")));
+		userModel.setAlternateNo(Long.parseLong(request.getParameter("alternateNo")));
+		userModel.setGender(request.getParameter("gender"));
+		userModel.setPassword(request.getParameter("password"));
+		userModel.setFileId(fileId);
 
-			userid = userDao.saveUser(userModel);
+		userid = userDao.saveUser(userModel);
 
-			if (userid != null) {
-				String line[] = request.getParameterValues("line[]");
-				String street[] = request.getParameterValues("street[]");
-				String area[] = request.getParameterValues("area[]");
-				String landmark[] = request.getParameterValues("famous[]");
-				String city[] = request.getParameterValues("city[]");
-				String state[] = request.getParameterValues("state[]");
-				String country[] = request.getParameterValues("country[]");
+		if (userid != null) {
+			String line[] = request.getParameterValues("line[]");
+			String street[] = request.getParameterValues("street[]");
+			String area[] = request.getParameterValues("area[]");
+			String landmark[] = request.getParameterValues("famous[]");
+			String city[] = request.getParameterValues("city[]");
+			String state[] = request.getParameterValues("state[]");
+			String country[] = request.getParameterValues("country[]");
 
-				for (int key = 0; key < line.length; key++) {
-					addressModel.setUserId(userid);
-					addressModel.setLine(line[key]);
-					addressModel.setStreet(street[key]);
-					addressModel.setArea(area[key]);
-					addressModel.setLandmark(landmark[key]);
-					addressModel.setCity(city[key]);
-					addressModel.setState(state[key]);
-					addressModel.setCountry(country[key]);
-					addressDao.saveAddress(addressModel);
-				}
-				request.setAttribute("success", properties.getProperty("registrationSuccess"));
-				request.getRequestDispatcher("UserLogin.jsp").forward(request, response);
-			} else {
-				request.setAttribute("failed", properties.getProperty("registrationFailed"));
-				request.getRequestDispatcher("Registration.jsp").forward(request, response);
+			for (int key = 0; key < line.length; key++) {
+				addressModel.setUserId(userid);
+				addressModel.setLine(line[key]);
+				addressModel.setStreet(street[key]);
+				addressModel.setArea(area[key]);
+				addressModel.setLandmark(landmark[key]);
+				addressModel.setCity(city[key]);
+				addressModel.setState(state[key]);
+				addressModel.setCountry(country[key]);
+				addressDao.saveAddress(addressModel);
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			request.setAttribute("success", properties.getProperty("registrationSuccess"));
+			request.getRequestDispatcher("UserLogin.jsp").forward(request, response);
+		} else {
+			request.setAttribute("failed", properties.getProperty("registrationFailed"));
+			request.getRequestDispatcher("Registration.jsp").forward(request, response);
 		}
 	}
 

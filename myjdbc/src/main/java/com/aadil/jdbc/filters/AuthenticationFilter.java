@@ -36,13 +36,15 @@ public class AuthenticationFilter implements Filter {
 			throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		// place your code here
-		HttpServletRequest servletRequest = (HttpServletRequest) request;
-		HttpServletResponse servletResponse = (HttpServletResponse) response;
-		if (servletRequest.getAttribute("Login") != null) {
-			// pass the request along the filter chain
-			chain.doFilter(request, response);
+		if (response instanceof HttpServletResponse) {
+			HttpServletRequest servletRequest = (HttpServletRequest) request;
+			HttpServletResponse servletResponse = (HttpServletResponse) response;
+			if (servletRequest.getAttribute("Login") != null) {
+				// pass the request along the filter chain
+				chain.doFilter(request, response);
+			}
+			servletResponse.sendRedirect("UserLogin.jsp");
 		}
-		servletResponse.sendRedirect("UserLogin.jsp");
 	}
 
 	/**
